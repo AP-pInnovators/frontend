@@ -22,10 +22,11 @@ On Windows you can only develop Android apps; we will develop for Android, and w
 - While getting the Flutter SDK set up, ```flutter doctor``` is your best friend (and ```flutter doctor -v``` if your error are more severe)
 - Once finished downloading the SDK, open the command pallate again (Ctrl + Shift + P) and select "Flutter: Add Flutter SDK to PATH" (unless you already did it from the prompt)
 - If you already set up Android Studio and didn't install the components through the wizard, go to the "Welcome to Android Studio" screen and select "More Actions" > "SDK Manager"; look through all the tabs for the required components, select all of them, and hit "Apply" to install them
+- If you're looking for "Android SDK Platform, API 35.0.1" but don't see it, just make sure that "Android 15.0 ("VanillaIceCream")" API Level 35 is installed
 - When turning on VM acceleration to get the emulator running, if you run ```-accel-check``` on the specified file and see a message saying to run ```bcdedit /set hypervisorlaunchtype off```, run that command and <strong>make sure to restart your computer afterwards to apply the changes</strong>
-- When adding a device to the device manager, select "Tablet" > "Medium Tablet" and select the download for the image that says Release Name "API 35", <strong>API Level 35</strong>, and Target "Android API 35 (Google APIs)"; once it downloads, select the image; make sure the startup orientation is landscape, and hit Finish without changing anything else
+- When adding a device to the device manager, select "Tablet" > "Medium Tablet", <strong>select the "x86 Images" tab</strong>, and select the download for the image that says Release Name "VanillaIceCream", API 35, and <strong>Target "Android 15.0 (Google APIs)"</strong>; once it downloads (should come downloaded most likely), select the image; make sure the startup orientation is landscape, and hit Finish without changing anything else
     - <strong>We will be developing specifically on tablet and for this Google API image</strong>
-- To make sure everything works, launch the emulator (then finish following the guide)
+- To make sure everything works, launch the emulator briefly (then close it and finish following the guide)
 - When accepting the Android licenses, I had an issue with cmdline-tools not being found. To fix this, go to the Android SDK manager (guide above), check "Show Package Details" on the bottom right, find the "Command-line Tools", and uncheck the latest version, and instead check the latest version that doesn't say "(latest)" at the end (for me, 16.0 worked)
 - Run ```flutter doctor``` one last time after everything is done
 
