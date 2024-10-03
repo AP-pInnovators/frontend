@@ -7,16 +7,7 @@ void main() {
   runApp(MyApp());
 }
 
-void getData() async {
-  http.Response response = await http.get(Uri.parse('http://127.0.0.1:8000/api'));
-  if (response.statusCode == 200) {
-    String data = response.body;
-    var decodedData = jsonDecode(data);
-    print(decodedData);
-  } else {
-    print(response.statusCode);
-  }
-}
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -39,6 +30,19 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
+  var decodedData = {};
+
+  void getData() async {
+    http.Response response = await http.get(Uri.parse('http://127.0.0.1:8000/api'));
+    if (response.statusCode == 200) {
+      String data = response.body;
+      decodedData = jsonDecode(data);
+      print(decodedData);
+    } else {
+      print(response.statusCode);
+    }
+    notifyListeners();
+  }
   
 }
 
@@ -112,8 +116,14 @@ class HomePage extends StatelessWidget {
 }
 
 class LoginPage extends StatelessWidget {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var data = appState.decodedData;
+
     return Scaffold(body: 
         Center(
           child: Column(
@@ -128,19 +138,35 @@ class LoginPage extends StatelessWidget {
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
                     hintText: 'Enter Username',              
                   ),
+                  controller: usernameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your username';
+                    }
+                    return null;
+                  }
                 ),
               ),
               SizedBox(height:10),
               SizedBox(                
                 height: 60,
                 width: 350,
-                child: TextFormField(
+                child:  TextFormField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
                     hintText: 'Enter Password',              
                   ),
+                  controller: passwordController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
                 ),
               ),
+
               SizedBox(height:10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -149,8 +175,22 @@ class LoginPage extends StatelessWidget {
                     )
                   ),
                 onPressed: () {
-                    getData();
-                  },
+                    appState.getData();
+                    if (data[usernameController.text] == passwordController.text) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage()
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Invalid Credentials')),
+                          );
+                      }
+                    },
+                  
                 child: Container(
                   width:300,
                   height:60,
@@ -158,6 +198,7 @@ class LoginPage extends StatelessWidget {
                   child: Text("Login")
                 )
               ),
+
               SizedBox(height: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
