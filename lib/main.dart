@@ -43,7 +43,7 @@ class MyAppState extends ChangeNotifier {
     http.Response response;
 
 
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid) { //if on android, use the locoalhost ip specific to the android emulator
       response = await http.post(
       Uri.parse('http://10.0.2.2:8000/api/login'), 
       headers: {
@@ -52,7 +52,7 @@ class MyAppState extends ChangeNotifier {
     body: jsondata);
     }
     else {
-      response = await http.post(
+      response = await http.post( //if on any other platform, use the default localhost ip of 127.0.0.1
       Uri.parse('http://127.0.0.1:8000/api/login'), 
       headers: {
           'Content-Type': 'application/json'
