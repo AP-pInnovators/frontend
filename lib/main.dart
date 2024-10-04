@@ -1,13 +1,13 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-
-// ignore this this is what i used to practice - it's a codelab's code, i'm
-// using it to copy and paste some stuff
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 void main() {
   runApp(MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -21,193 +21,252 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 137, 201, 253)),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 159, 193, 233),
         ),
-        home: MyHomePage(),
+        home: LoginPage(),
       ),
     );
   }
 }
 
 class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
+  var decodedData = {};
 
-  void getNext() {
-    current = WordPair.random();
-    notifyListeners();
-  }
+  void login(String username, String password) async {
+    var initdata = {'username':username, 'password':password};
 
-  var favorites = <WordPair>[];
+    var jsondata = jsonEncode(initdata);
 
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
+    http.Response response = await http.post(
+      Uri.parse('http://127.0.0.1:8000/api/login'), 
+    headers: {
+        'Content-Type': 'application/json'
+    }, 
+    body: jsondata);
+
+    if (response.statusCode == 200) {
+      String data = response.body;
+      decodedData = jsonDecode(data);
+      print(decodedData);
     } else {
-      favorites.add(current);
+      print(response.statusCode);
     }
     notifyListeners();
   }
+  
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  var selectedIndex = 0;
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = GeneratorPage();
-        break;
-      case 1:
-        page = FavoritesPage();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              SafeArea(
-                child: NavigationRail(
-                  extended: constraints.maxWidth >= 600,
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.home),
-                      label: Text('Home'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
-                    ),
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0)
+                  )
+                ),
+                onPressed: () {
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginPage()
+                          ),
+                        );
+                },
+                child: Column(
+                  children: [
+                    Text("Recommended Problem"),
+                    Container(
+                      width: 300,
+                      height: 140,
+                      alignment: Alignment.center,
+                      child: Text("Preview")
+                    )
                   ],
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected: (value) {
-                    setState(() {
-                      selectedIndex = value;
-                    });
-                  },
+                )
+              ),
+            SizedBox(height:20),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0)
+                  )
                 ),
-              ),
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: page,
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    );
-  }
-}
-
-
-class GeneratorPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var pair = appState.current;
-
-    IconData icon;
-    if (appState.favorites.contains(pair)) {
-      icon = Icons.favorite;
-    } else {
-      icon = Icons.favorite_border;
-    }
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
                 onPressed: () {
-                  appState.toggleFavorite();
+                  print("hi");
                 },
-                icon: Icon(icon),
-                label: Text('Like'),
+                child: Column(
+                  children: [
+                    Text("Daily Problem"),
+                    Container(
+                      width: 300,
+                      height: 140,
+                      alignment: Alignment.center,
+                      child: Text("Preview")
+                    )
+                  ],
+                )
               ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  appState.getNext();
-                },
-                child: Text('Next'),
-              ),
-            ],
-          ),
-        ],
+            SizedBox(height:20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                NavigationButton(icon: Icons.manage_search),
+                SizedBox(width: 10),
+                NavigationButton(icon: Icons.leaderboard),
+                SizedBox(width: 10),
+                NavigationButton(icon: Icons.account_circle),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class FavoritesPage extends StatelessWidget {
+class LoginPage extends StatelessWidget {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var favorites = appState.favorites;
 
-    final theme = Theme.of(context); 
-    final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.primary,
-    );
+    return Scaffold(body: 
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(                
+                height: 60,
+                width: 350,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                    hintText: 'Enter Username',              
+                  ),
+                  controller: usernameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your username';
+                    }
+                    return null;
+                  }
+                ),
+              ),
+              SizedBox(height:10),
+              SizedBox(                
+                height: 60,
+                width: 350,
+                child:  TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                    hintText: 'Enter Password',              
+                  ),
+                  controller: passwordController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                ),
+              ),
 
-    return ListView(
-      children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(
-              style: style,
-              "You have these phrases favorited"
-            ),
+              SizedBox(height:10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)
+                    )
+                  ),
+                onPressed: () {
+                    appState.login(usernameController.text, passwordController.text);
+                    Future.delayed(Duration(milliseconds: 100), () {
+                      print(appState.decodedData);
+                      if (appState.decodedData["success"] == "true") {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePage()
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Invalid Credentials')),
+                            );
+                        }
+                    });
+                    
+
+                    },
+                  
+                child: Container(
+                  width:300,
+                  height:60,
+                  alignment:Alignment.center,
+                  child: Text("Login")
+                )
+              ),
+
+              SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)
+                    )
+                  ),
+                onPressed: () {
+                    print("hi");
+                  },
+                child: Container(
+                  width:300,
+                  height:60,
+                  alignment:Alignment.center,
+                  child: Text("Google Login")
+                )
+              )
+            ],
           ),
-          for (var msg in favorites)
-            ListTile(
-              leading: Icon(Icons.favorite),
-              title: Text(msg.asLowerCase),
-            ),
-      ],
+        )
     );
   }
 }
 
-class BigCard extends StatelessWidget {
-  const BigCard({
+
+
+class NavigationButton extends StatelessWidget {
+  const NavigationButton({
     super.key,
-    required this.pair,
+    required this.icon,
   });
 
-  final WordPair pair;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); 
-    final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
-    );
-    
-    return Card(
-      color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Text(
-          pair.asLowerCase, 
-          style: style,
-          semanticsLabel: "${pair.first} ${pair.second}",),
+    return SizedBox(
+      width:100,
+      height:100,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.0)
+          )
+        ),
+        onPressed: () {
+          print("hi");
+        },
+        child: Icon(icon, size:50),
       ),
     );
   }
