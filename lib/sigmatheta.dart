@@ -32,8 +32,18 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   var decodedData = {};
 
-  void getData() async {
-    http.Response response = await http.get(Uri.parse('http://127.0.0.1:8000/api'));
+  void login(String username, String password) async {
+    var initdata = {'username':username, 'password':password};
+
+    var jsondata = jsonEncode(initdata);
+
+    http.Response response = await http.post(
+      Uri.parse('http://127.0.0.1:8000/api/login'), 
+    headers: {
+        'Content-Type': 'application/json'
+    }, 
+    body: jsondata);
+
     if (response.statusCode == 200) {
       String data = response.body;
       decodedData = jsonDecode(data);
@@ -61,7 +71,12 @@ class HomePage extends StatelessWidget {
                   )
                 ),
                 onPressed: () {
-                  print("hi");
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginPage()
+                          ),
+                        );
                 },
                 child: Column(
                   children: [
@@ -122,7 +137,6 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var data = appState.decodedData;
 
     return Scaffold(body: 
         Center(
@@ -175,20 +189,25 @@ class LoginPage extends StatelessWidget {
                     )
                   ),
                 onPressed: () {
-                    appState.getData();
-                    if (data[usernameController.text] == passwordController.text) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HomePage()
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Invalid Credentials')),
+                    appState.login(usernameController.text, passwordController.text);
+                    Future.delayed(Duration(milliseconds: 100), () {
+                      print(appState.decodedData);
+                      if (appState.decodedData["success"] == "true") {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePage()
+                            ),
                           );
-                      }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Invalid Credentials')),
+                            );
+                        }
+                    });
+                    
+
                     },
                   
                 child: Container(
