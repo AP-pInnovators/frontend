@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
+
+
 void main() {
   runApp(MyApp());
 }
@@ -37,12 +40,26 @@ class MyAppState extends ChangeNotifier {
 
     var jsondata = jsonEncode(initdata);
 
-    http.Response response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/api/login'), 
-    headers: {
-        'Content-Type': 'application/json'
+    http.Response response;
+
+
+    if (Platform.isAndroid) {
+      response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/api/login'), 
+      headers: {
+          'Content-Type': 'application/json'
     }, 
     body: jsondata);
+    }
+    else {
+      response = await http.post(
+      Uri.parse('http://127.0.0.1:8000/api/login'), 
+      headers: {
+          'Content-Type': 'application/json'
+      }, 
+      body: jsondata);
+    }
+    
 
     if (response.statusCode == 200) {
       String data = response.body;
