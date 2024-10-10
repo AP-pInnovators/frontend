@@ -1,10 +1,11 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:flutter_math_fork/ast.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:flutter_math_fork/tex.dart';
 
 void main() {
   runApp(MyApp());
@@ -74,6 +75,7 @@ class MyAppState extends ChangeNotifier {
 }
 
 class HomePage extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,9 +126,9 @@ class HomePage extends StatelessWidget {
                       width: 300,
                       height: 140,
                       alignment: Alignment.center,
-                      child: Text("Preview")
+                      child: Math.tex(r'\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}', mathStyle: MathStyle.display)
                     )
-                  ],
+                  ]
                 )
               ),
             SizedBox(height:20),
@@ -208,6 +210,9 @@ class LoginPage extends StatelessWidget {
                 onPressed: () {
                     appState.login(usernameController.text, passwordController.text);
                     Future.delayed(Duration(milliseconds: 100), () {
+                      if (!context.mounted) {
+                        return;
+                      }
                       print(appState.decodedData);
                       if (appState.decodedData["success"] == "true") {
                         Navigator.push(
@@ -219,7 +224,7 @@ class LoginPage extends StatelessWidget {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Invalid Credentials')),
+                              content: Text("Invalid Credentials")),
                             );
                         }
                     });
