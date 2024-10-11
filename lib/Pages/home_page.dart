@@ -28,16 +28,33 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {},
               child: Column(
-                children: [
-                  Text("Daily Problem"),
-                  Container(
-                    width: 300,
-                    height: 140,
-                    alignment: Alignment.center,
-                    child: Math.tex(r'\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}', mathStyle: MathStyle.display),
-                  ),
-                ],
-              ),
+                  children: [
+                    Text("Daily Problem"),
+                    Container(
+                      alignment: Alignment.center,
+                      width: 300,
+                      height: 140,  // Set fixed width to prevent overflow
+                      padding: EdgeInsets.all(8), // Add padding for better spacing
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal, // Horizontal scrolling for LaTeX
+                        child: Math.tex(
+                          r"""
+                          \text{Let } f \text{ be the unique function defined on the positive integers such that } 
+                          \sum_{d \mid n} d \cdot f\left(\frac{n}{d}\right) = 1 
+                          \text{ for all positive integers } n. 
+                          \text{ What is } f(2023)?
+                          \quad \textbf{(A)}~-1536 
+                          \quad \textbf{(B)}~96 
+                          \quad \textbf{(C)}~108 
+                          \quad \textbf{(D)}~116 
+                          \quad \textbf{(E)}~144
+                          """,
+                          textStyle: TextStyle(fontSize: 16), // Adjust font size for readability
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ),
             SizedBox(height: 20),
             // Navigation Buttons
