@@ -7,32 +7,41 @@ import 'dart:io';
 class MyAppState extends ChangeNotifier {
   var decodedData = {};
 
-  void login(String username, String password) async {
+  Future<void> login(String username, String password) async {
     var initdata = {'username': username, 'password': password};
     var jsondata = jsonEncode(initdata);
 
     http.Response response;
 
-    if (Platform.isAndroid) {
-      response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsondata,
-      );
-    } else {
-      response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/api/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsondata,
-      );
-    }
+    try {
+      if (Platform.isAndroid) {
+        response = await http.post(
+          Uri.parse('http://10.0.2.2:8000/api/login'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsondata,
+        );
+      } else {
+        response = await http.post(
+          Uri.parse('http://127.0.0.1:8000/api/login'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsondata,
+        );
+      }
 
-    if (response.statusCode == 200) {
-      String data = response.body;
-      decodedData = jsonDecode(data);
-    } else {
-      print(response.statusCode);
+      if (response.statusCode == 200) {
+        decodedData = jsonDecode(response.body);
+        if (decodedData['success'] == "true") {
+          notifyListeners();
+        } else {
+          // Extract and throw the error message from the response
+          throw decodedData['error_message'];
+        }
+      } else {
+        throw 'Failed to login: ${response.statusCode}';
+      }
+    } catch (e) {
+      // Pass the error message to the UI
+      throw Exception(e.toString());
     }
-    notifyListeners();
   }
 }

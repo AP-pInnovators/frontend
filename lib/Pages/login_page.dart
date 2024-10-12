@@ -45,19 +45,27 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: 10),
             // Login Button
             ElevatedButton(
-              onPressed: () {
-                appState.login(usernameController.text, passwordController.text);
-                Future.delayed(Duration(milliseconds: 100), () {
+              onPressed: () async {
+                try {
+                  await appState.login(
+                    usernameController.text,
+                    passwordController.text,
+                  );
                   if (!context.mounted) return;
+
+                  // If login is successful
                   if (appState.decodedData["success"] == "true") {
                     Navigator.pushReplacementNamed(context, '/home');
-                  } 
-                  else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Invalid Credentials")),
-                    );
                   }
-                });
+                } catch (e) {
+                  // Catch and display the error message using a SnackBar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString()),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               },
               child: Container(
                 width: 300,
