@@ -13,9 +13,15 @@ class HomePage extends StatelessWidget {
           children: [
             // Recommended Problem Button
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
               onPressed: () {
                 Navigator.pushNamed(context, '/login');
               },
+
               child: Column(
                 children: [
                   Text("Recommended Problem"),
@@ -26,6 +32,11 @@ class HomePage extends StatelessWidget {
             SizedBox(height: 20),
             // Daily Problem Button
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
               onPressed: () {},
               child: Column(
                   children: [
@@ -49,7 +60,8 @@ class HomePage extends StatelessWidget {
                           \quad \textbf{(D)}~116 
                           \quad \textbf{(E)}~144
                           """,
-                          textStyle: TextStyle(fontSize: 16), // Adjust font size for readability
+                          textStyle: TextStyle(fontSize: 16),
+                           // Adjust font size for readability
                         ),
                       ),
                     ),
