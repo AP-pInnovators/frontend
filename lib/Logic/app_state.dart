@@ -6,13 +6,12 @@ import 'dart:io';
 
 class MyAppState extends ChangeNotifier {
   var decodedData = {};
+  var decodedQuestion = {};
 
   Future<void> login(String username, String password) async {
     var initdata = {'username': username, 'password': password};
     var jsondata = jsonEncode(initdata);
-
     http.Response response;
-
     try {
       if (Platform.isAndroid) {
         response = await http.post(
@@ -27,10 +26,10 @@ class MyAppState extends ChangeNotifier {
           body: jsondata,
         );
       }
-
+      
       if (response.statusCode == 200) {
         decodedData = jsonDecode(response.body);
-        if (decodedData['success'] == "true") {
+        if (decodedData['success'] == true) {
           notifyListeners();
         } else {
           // Extract and throw the error message from the response
@@ -44,4 +43,30 @@ class MyAppState extends ChangeNotifier {
       throw Exception(e.toString());
     }
   }
+  Future<void> getquestion(int questionid) async {
+    http.Response response;
+    try {
+      if (Platform.isAndroid) {
+        response = await http.get(
+          Uri.parse('http://10.0.2.2:8000/api/question/$questionid'),
+          headers: {'Content-Type': 'application/json'},
+        );
+      } else {
+        response = await http.get(
+          Uri.parse('http://127.0.0.1:8000/api/question/$questionid'),
+          headers: {'Content-Type': 'application/json'},
+        );
+      }
+      if (response.statusCode == 200) {
+        decodedQuestion = jsonDecode(response.body);
+        if (decodedQuestion['success'] == true) {
+          notifyListeners();
+        }
+      }
+      
+    } catch (e) {
+      // TODO
+    }
+  }
+  
 }

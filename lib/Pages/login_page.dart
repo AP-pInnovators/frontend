@@ -58,7 +58,7 @@ class LoginPage extends StatelessWidget {
                   if (!context.mounted) return;
 
                   // If login is successful
-                  if (appState.decodedData["success"] == "true") {
+                  if (appState.decodedData["success"] == true) {
                     Navigator.pushReplacementNamed(context, '/home');
                   }
                 } catch (e) {
