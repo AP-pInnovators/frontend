@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'Logic/app_state.dart';
 import 'Pages/login_page.dart';
 import 'Pages/home_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 137, 201, 253)),
           scaffoldBackgroundColor: Color.fromARGB(255, 200, 165, 223),
+          fontFamily: GoogleFonts.titilliumWeb().fontFamily,
         ),
         initialRoute: '/login',
         routes: {

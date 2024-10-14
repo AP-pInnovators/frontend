@@ -19,9 +19,11 @@ class LoginPage extends StatelessWidget {
             // Username field
             SizedBox(
               height: 60,
-              width: 350,
+              width: 450,
               child: TextFormField(
                 decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(20.0),
+                  filled: true,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
                   hintText: 'Enter Username',
                 ),
@@ -32,9 +34,11 @@ class LoginPage extends StatelessWidget {
             // Password field
             SizedBox(
               height: 60,
-              width: 350,
+              width: 450,
               child: TextFormField(
                 decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(20.0),
+                  filled: true,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
                   hintText: 'Enter Password',
                 ),
@@ -42,7 +46,7 @@ class LoginPage extends StatelessWidget {
                 obscureText: true,
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 30),
             // Login Button
             ElevatedButton(
               onPressed: () async {
@@ -54,7 +58,7 @@ class LoginPage extends StatelessWidget {
                   if (!context.mounted) return;
 
                   // If login is successful
-                  if (appState.decodedData["success"] == "true") {
+                  if (appState.decodedData["success"] == true) {
                     Navigator.pushReplacementNamed(context, '/home');
                   }
                 } catch (e) {
@@ -68,13 +72,25 @@ class LoginPage extends StatelessWidget {
                 }
               },
               child: Container(
-                width: 300,
+                width: 400,
                 height: 60,
                 alignment: Alignment.center,
                 child: Text("Login"),
               ),
             ),
+            SizedBox(height: 10),
             // Google Login Button (optional)
+            ElevatedButton(
+              onPressed: () {
+                print("hi");
+              },
+              child: Container(
+                width: 400,
+                height: 60,
+                alignment: Alignment.center,
+                child: Text("Google Login"),
+              ),
+            ),
           ],
         ),
       ),

@@ -15,6 +15,11 @@ class NavigationButton extends StatelessWidget {
       width: 100,
       height: 100,
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
         onPressed: () {},
         child: Icon(icon, size: 50),
       ),

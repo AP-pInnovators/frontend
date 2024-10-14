@@ -1,11 +1,47 @@
 // lib/Pages/home_page.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
 import '../Widgets/navigation_button.dart';
+import 'package:flutter_tex/flutter_tex.dart'; 
+import '../Logic/app_state.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+   Future<void>? _questionFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchQuestion(); // Fetch the question when the page is initialized
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Subscribe to the route changes
+  }
+
+  void _fetchQuestion() {
+    var appState = Provider.of<MyAppState>(context, listen: false);
+    setState(() {
+      _questionFuture = appState.getquestion(2); // Call your question fetching method here
+    });
+  }
+
+
+  void didPushNext() {
+    // This is called when the current route is pushed to the next route
+    // If you want to refresh when going back, call _fetchQuestion here
+    _fetchQuestion();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -13,9 +49,15 @@ class HomePage extends StatelessWidget {
           children: [
             // Recommended Problem Button
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
               onPressed: () {
                 Navigator.pushNamed(context, '/login');
               },
+
               child: Column(
                 children: [
                   Text("Recommended Problem"),
@@ -26,6 +68,11 @@ class HomePage extends StatelessWidget {
             SizedBox(height: 20),
             // Daily Problem Button
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
               onPressed: () {},
               child: Column(
                   children: [
@@ -35,23 +82,36 @@ class HomePage extends StatelessWidget {
                       width: 300,
                       height: 140,  // Set fixed width to prevent overflow
                       padding: EdgeInsets.all(8), // Add padding for better spacing
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal, // Horizontal scrolling for LaTeX
-                        child: Math.tex(
-                          r"""
-                          \text{Let } f \text{ be the unique function defined on the positive integers such that } 
-                          \sum_{d \mid n} d \cdot f\left(\frac{n}{d}\right) = 1 
-                          \text{ for all positive integers } n. 
-                          \text{ What is } f(2023)?
-                          \quad \textbf{(A)}~-1536 
-                          \quad \textbf{(B)}~96 
-                          \quad \textbf{(C)}~108 
-                          \quad \textbf{(D)}~116 
-                          \quad \textbf{(E)}~144
-                          """,
-                          textStyle: TextStyle(fontSize: 16), // Adjust font size for readability
+                        child: FutureBuilder(
+                          future: _questionFuture,  // Fetch the question
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              // Show a loading indicator while the future is loading
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              // Handle any errors that occurred during the fetch
+                              return Center(
+                                child: Text('Error: ${snapshot.error}'),
+                              );
+                            } else {
+                              // Display the content once loaded
+                              return TeXView(
+                                child: TeXViewDocument(
+                                  appState.decodedQuestion["content"],
+                                  style: TeXViewStyle(
+                                    textAlign: TeXViewTextAlign.center,
+                                  ),
+                                ),
+                                style: TeXViewStyle(
+                                  backgroundColor: Colors.white,
+                                  padding: TeXViewPadding.all(10),
+                                ),
+                              );
+                            }
+                          },
                         ),
-                      ),
                     ),
                   ],
                 ),
