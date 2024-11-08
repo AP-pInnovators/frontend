@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Logic/app_state.dart';
+import '../API/sigma_API.dart';
 
 class LoginPage extends StatelessWidget {
   final usernameController = TextEditingController();
@@ -10,6 +11,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var sigmaAPI = SigmaAPI();
 
     return Scaffold(
       body: Center(
@@ -51,14 +53,14 @@ class LoginPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await appState.login(
+                  var response = await sigmaAPI.login(
                     usernameController.text,
                     passwordController.text,
                   );
                   if (!context.mounted) return;
 
                   // If login is successful
-                  if (appState.decodedData["success"] == true) {
+                  if (response.success) {
                     Navigator.pushReplacementNamed(context, '/home');
                   }
                 } catch (e) {
