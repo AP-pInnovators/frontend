@@ -20,13 +20,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _fetchQuestion(); // Fetch the question when the page is initialized
+    Future.microtask(() => _fetchQuestion()); // Fetch the question when the page is initialized
   }
 
   void _fetchQuestion() async {
     var appState = Provider.of<MyAppState>(context, listen: false);
     var rng = Random();
-    var curr = rng.nextInt(116) + 1;
+    var curr = 2;
     setState(() {
       _questionFuture = sigmaAPI.getquestion(curr); // Call your question fetching method here
     });

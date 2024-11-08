@@ -20,12 +20,12 @@ class _ProblemPageState extends State<ProblemPage> {
   @override
   void initState() {
     super.initState();
-    _fetchQuestion(); // Fetch the question when the page is initialized
+    Future.microtask(() => _fetchQuestion()); // Fetch the question when the page is initialized
   }
 
   void didPushNext() {
     //update question each time the page is called
-    _fetchQuestion();
+    Future.microtask(() => _fetchQuestion());
   }
 
   void _fetchQuestion() {
