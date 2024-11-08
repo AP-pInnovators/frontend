@@ -4,6 +4,7 @@ import '../Widgets/navigation_button.dart';
 import 'package:flutter_tex/flutter_tex.dart'; 
 import '../Logic/app_state.dart';
 import 'package:provider/provider.dart';
+import '../Widgets/problem.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,18 +12,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-   Future<void>? _questionFuture;
+   Future<Problem>? _questionFuture;
 
   @override
   void initState() {
     super.initState();
     _fetchQuestion(); // Fetch the question when the page is initialized
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Subscribe to the route changes
   }
 
   void _fetchQuestion() {
@@ -33,11 +28,11 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  void didPushNext() {
-    // This is called when the current route is pushed to the next route
-    // If you want to refresh when going back, call _fetchQuestion here
-    _fetchQuestion();
-  }
+  // void didPushNext() {
+  //   // This is called when the current route is pushed to the next route
+  //   // If you want to refresh when going back, call _fetchQuestion here
+  //   _fetchQuestion();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -85,31 +80,30 @@ class _HomePageState extends State<HomePage> {
                         child: FutureBuilder(
                           future: _questionFuture,  // Fetch the question
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              // Show a loading indicator while the future is loading
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (snapshot.hasError) {
+                            if (snapshot.hasError) {
                               // Handle any errors that occurred during the fetch
+                              print("hi");
                               return Center(
                                 child: Text('Error: ${snapshot.error}'),
                               );
-                            } else {
+                            } 
+                            else if (snapshot.hasData){
                               // Display the content once loaded
                               return TeXView(
                                 child: TeXViewDocument(
-                                  appState.decodedQuestion["content"],
+                                  snapshot.data!.content,
                                   style: TeXViewStyle(
                                     textAlign: TeXViewTextAlign.center,
                                   ),
                                 ),
                                 style: TeXViewStyle(
-                                  backgroundColor: Colors.white,
-                                  padding: TeXViewPadding.all(10),
+                                  padding: TeXViewPadding.all(5),
                                 ),
                               );
                             }
+                            return Center(
+                                child: CircularProgressIndicator(),
+                              );
                           },
                         ),
                     ),
