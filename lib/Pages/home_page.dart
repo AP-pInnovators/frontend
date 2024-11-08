@@ -4,7 +4,9 @@ import '../Widgets/navigation_button.dart';
 import 'package:flutter_tex/flutter_tex.dart'; 
 import '../Logic/app_state.dart';
 import 'package:provider/provider.dart';
-import '../Widgets/problem.dart';
+import '../Models/problem_response.dart';
+import 'dart:math';
+import '../API/sigma_API.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,7 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-   Future<Problem>? _questionFuture;
+   Future<ProblemResponse>? _questionFuture;
+   var sigmaAPI = SigmaAPI();
 
   @override
   void initState() {
@@ -20,11 +23,14 @@ class _HomePageState extends State<HomePage> {
     _fetchQuestion(); // Fetch the question when the page is initialized
   }
 
-  void _fetchQuestion() {
+  void _fetchQuestion() async {
     var appState = Provider.of<MyAppState>(context, listen: false);
+    var rng = Random();
+    var curr = rng.nextInt(116) + 1;
     setState(() {
-      _questionFuture = appState.getquestion(2); // Call your question fetching method here
+      _questionFuture = sigmaAPI.getquestion(curr); // Call your question fetching method here
     });
+    await appState.updateCurrentProblem(curr);
   }
 
 
@@ -68,7 +74,9 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/problem');
+              },
               child: Column(
                   children: [
                     Text("Daily Problem"),
@@ -82,7 +90,6 @@ class _HomePageState extends State<HomePage> {
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               // Handle any errors that occurred during the fetch
-                              print("hi");
                               return Center(
                                 child: Text('Error: ${snapshot.error}'),
                               );
