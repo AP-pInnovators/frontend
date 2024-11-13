@@ -25,7 +25,6 @@ class _HomePageState extends State<HomePage> {
 
   void _fetchQuestion() async {
     var appState = Provider.of<MyAppState>(context, listen: false);
-    var rng = Random();
     var curr = 2;
     setState(() {
       _questionFuture = sigmaAPI.getquestion(curr); // Call your question fetching method here

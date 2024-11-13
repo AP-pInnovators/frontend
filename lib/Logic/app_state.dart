@@ -1,13 +1,11 @@
 // lib/Logic/app_state.dart
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:io';
-import '../Models/problem_response.dart';
+import '../Models/sigma_model.dart';
 
 class MyAppState extends ChangeNotifier {
+  var myModel = SigmaModel();
   var dailyProblem = 1;
-  // var myStorage = SigmaStorage();  
+  
 
   Future<void> updateCurrentProblem(int id) async {
     try {
