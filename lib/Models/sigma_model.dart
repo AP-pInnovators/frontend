@@ -14,11 +14,11 @@ class SigmaModel {
       return;
     }
 
-    Future<void> getquestion(int questionid) async {
+    Future<ProblemResponse> getquestion(int questionid) async {
       String? sessionKey = await myStorage.getSessionKey();
       ProblemResponse data = await sigmaAPI.getquestion(questionid, sessionKey);
       questionContent = data.content;
-      return;
+      return data;
     }
 
     Future<AnswerResponse> answer(String content, int id) async {

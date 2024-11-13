@@ -5,7 +5,7 @@ import 'package:flutter_tex/flutter_tex.dart';
 import '../Logic/app_state.dart';
 import 'package:provider/provider.dart';
 import '../Models/problem_response.dart';
-import 'dart:math';
+import '../Models/sigma_model.dart';
 import '../API/sigma_API.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
    Future<ProblemResponse>? _questionFuture;
    var sigmaAPI = SigmaAPI();
+   var myModel = SigmaModel();
 
   @override
   void initState() {
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     var appState = Provider.of<MyAppState>(context, listen: false);
     var curr = 2;
     setState(() {
-      _questionFuture = sigmaAPI.getquestion(curr); // Call your question fetching method here
+      _questionFuture = myModel.getquestion(curr); // Call your question fetching method here
     });
     await appState.updateCurrentProblem(curr);
   }
