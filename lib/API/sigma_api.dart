@@ -4,11 +4,10 @@ import 'package:namer_app/Models/login_response.dart';
 import 'dart:convert';
 import 'dart:io';
 import '../Models/problem_response.dart';
-import '../storage.dart';
+import '../Logic/app_state.dart';
 
 class SigmaAPI {
-  var myStorage = SigmaStorage();
-
+  
   String returnBaseURL() {
     if (Platform.isAndroid) {
       return 'http://10.0.2.2:8000/api/';
@@ -34,8 +33,9 @@ class SigmaAPI {
       if (response.statusCode == 200) {
         decodedData = jsonDecode(response.body);
         
+        
         if (decodedData['success']) {
-          // myStorage.writeSessionKey(decodedData['session_token']);
+          
           return LoginResponse.fromJson(decodedData as Map<String, dynamic>);
         } else {
           // Extract and throw the error message from the response
@@ -46,15 +46,13 @@ class SigmaAPI {
       }
     } catch (e) {
       // Pass the error message to the UI
+      print("hi");
       throw Exception(e);
     }
   }
 
-  Future<ProblemResponse> getquestion(int questionid) async {
-
+  Future<ProblemResponse> getquestion(int questionid, String? sessionKey) async {
     // check first to see if we're logged in (i.e. do we have a session key)
-    // String? sessionKey = await myStorage.getSessionKey();
-    // print(sessionKey);
 
     var decodedQuestion = {};
     http.Response response;
@@ -63,13 +61,13 @@ class SigmaAPI {
     try {
       response = await http.get(
         Uri.parse('$url''question/$questionid'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+                  'Authorization':'Bearer $sessionKey'},
       );
       
       if (response.statusCode == 200) {
         decodedQuestion = jsonDecode(response.body);
         if (decodedQuestion['success']) {
-          print(jsonDecode(response.body));
           return ProblemResponse.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
         }
         else {
@@ -84,8 +82,8 @@ class SigmaAPI {
     }
   }
 
-  Future<AnswerResponse> answer(String answer, int id) async {
-    var initdata = {'id': id, 'answer': answer};
+  Future<AnswerResponse> answer(String content, int id, String? sessionKey) async {
+    var initdata = {'content': content};
     var jsondata = jsonEncode(initdata);
     var decodedAnswer = {};
     http.Response response;
@@ -95,14 +93,14 @@ class SigmaAPI {
 
       response = await http.post(
         Uri.parse('$url''question/$id'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+                  'Authorization':'Bearer $sessionKey'},
         body: jsondata,
       );
 
       
       if (response.statusCode == 200) {
         decodedAnswer = jsonDecode(response.body);
-        print(decodedAnswer);
         if (decodedAnswer['success']) {
           return AnswerResponse.fromJson(decodedAnswer as Map<String, dynamic>);
         } else {

@@ -2,10 +2,12 @@ import 'api_response.dart';
 
 class LoginResponse extends APIResponse {
   final String sessionToken;
+  final String tokenType;
 
   const LoginResponse({
     required super.success,
     required this.sessionToken,
+    required this.tokenType,
   });
 
   @override
@@ -13,11 +15,13 @@ class LoginResponse extends APIResponse {
     return switch (json) {
       {
         'success': bool success,
-        'session_token': String sessionToken,
+        'access_token': String sessionToken,
+        'token-type' : String tokenType
       } =>
         LoginResponse(
           success: success,
           sessionToken: sessionToken,
+          tokenType: tokenType,
         ),
       _ => throw const FormatException('Failed to login'),
     };
