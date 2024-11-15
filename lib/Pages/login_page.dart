@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Logic/app_state.dart';
 import '../API/sigma_API.dart';
+import '../Models/sigma_model.dart';
 
 class LoginPage extends StatelessWidget {
   final usernameController = TextEditingController();
@@ -11,7 +12,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var sigmaAPI = SigmaAPI();
+    var myModel = SigmaModel();
 
     return Scaffold(
       body: Center(
@@ -53,7 +54,7 @@ class LoginPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  var response = await sigmaAPI.login(
+                  var response = await myModel.login(
                     usernameController.text,
                     passwordController.text,
                   );

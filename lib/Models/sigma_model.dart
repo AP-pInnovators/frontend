@@ -8,10 +8,10 @@ class SigmaModel {
     var sigmaAPI = SigmaAPI();
     String? questionContent;
 
-    Future<void> login(String username, String password) async {
+    Future<LoginResponse> login(String username, String password) async {
       LoginResponse data = await sigmaAPI.login(username, password);
       myStorage.writeSessionKey(data.sessionToken);
-      return;
+      return data;
     }
 
     Future<ProblemResponse> getquestion(int questionid) async {

@@ -5,6 +5,7 @@ import '../Logic/app_state.dart';
 import 'package:provider/provider.dart';
 import '../Models/problem_response.dart';
 import '../API/sigma_API.dart';
+import '../Models/sigma_model.dart';
 
 class ProblemPage extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _ProblemPageState extends State<ProblemPage> {
   final answerController = TextEditingController();
   Future<ProblemResponse>? _questionFuture;
   int? questionid;
-  var sigmaAPI = SigmaAPI();
+  var myModel = SigmaModel();
 
   @override
   void initState() {
@@ -32,7 +33,7 @@ class _ProblemPageState extends State<ProblemPage> {
     var appState = Provider.of<MyAppState>(context, listen: false);
 
     setState(() {
-      _questionFuture = sigmaAPI.getquestion(appState.dailyProblem); // Call your question fetching method here
+      _questionFuture = myModel.getquestion(appState.dailyProblem); // Call your question fetching method here
     });
   }
 
@@ -180,7 +181,7 @@ class _ProblemPageState extends State<ProblemPage> {
                   ElevatedButton(
                     onPressed: () async {
                       try {
-                        var response = await sigmaAPI.answer(
+                        var response = await myModel.answer(
                           answerController.text,
                           appState.dailyProblem,
                         );
