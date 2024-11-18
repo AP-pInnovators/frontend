@@ -59,48 +59,12 @@ class ProfilePage extends StatelessWidget {
                 width: 200,
                 height: 50,
                 alignment: Alignment.center,
-                       // Username
-            Text(
-              username,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            // Rank
-            Text(
-              rank,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey.shade600,
-              ),
-            ),
-            SizedBox(height: 30),
-            // Edit Profile button
-            ElevatedButton(
-              onPressed: () {
-                // Add functionality to edit profile
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Edit Profile functionality coming soon!"),
+                    ),
                   ),
-                );
-              },
-              child: Container(
-                width: 200,
-                height: 50,
-                alignment: Alignment.center,
-                child: Text(
-                    "Edit Profile",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+               ]  
+             ),
+            )
+          
+        );
   }
 }
