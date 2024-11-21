@@ -20,6 +20,15 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Username field
+            // Logo
+            Image.asset(
+              'assets/icon/icon-nobg.png', // Update with the actual path
+              width: 200, // Set width
+              height: 200, // Set height
+            ),
+            SizedBox(
+              height: 20
+            ),
             SizedBox(
               height: 60,
               width: 450,

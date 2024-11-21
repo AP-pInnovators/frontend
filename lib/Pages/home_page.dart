@@ -48,6 +48,15 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Logo
+            Image.asset(
+              'assets/icon/icon-nobg.png', // Update with the actual path
+              width: 200, // Set width
+              height: 200, // Set height
+            ),
+            SizedBox(
+              height: 20
+            ),
             // Recommended Problem Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
