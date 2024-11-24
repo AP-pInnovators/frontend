@@ -102,6 +102,7 @@ class SigmaAPI {
       if (response.statusCode == 200) {
         decodedAnswer = jsonDecode(response.body);
         if (decodedAnswer['success']) {
+          print(decodedAnswer);
           return AnswerResponse.fromJson(decodedAnswer as Map<String, dynamic>);
         } else {
           // Extract and throw the error message from the response

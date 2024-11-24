@@ -37,17 +37,18 @@ class _ProblemPageState extends State<ProblemPage> {
     });
   }
 
-  Future<void> _showCorrectDialog() async {
+  Future<void> _showCorrectDialog(int score) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Correct!"),
-          content: const SingleChildScrollView(
+          content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text("Congratulations, that's the correct answer!"),
+                const Text("Congratulations, that's the correct answer!"),
+                Text("You obtained $score points from this question!")
               ],
             ),
           ),
@@ -64,17 +65,22 @@ class _ProblemPageState extends State<ProblemPage> {
     );
   }
 
-  Future<void> _showWrongDialog() async {
+  Future<void> _showWrongDialog(int attempts) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Wrong"),
-          content: const SingleChildScrollView(
+          content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text("Sorry, but that's not the right answer. Please try again."),
+                const Text(
+                "Sorry, but that's not the right answer. Please try again."
+              ),
+                Text(
+                "Number of attempts left: $attempts", // Display the attempts
+              ),
               ],
             ),
           ),
@@ -194,12 +200,16 @@ class _ProblemPageState extends State<ProblemPage> {
                         // If login is successful
                         if (response.success) {
                           if (response.correct) {
-                            await _showCorrectDialog();
+                            await _showCorrectDialog(response.score);
                             if (!context.mounted) return;
                             Navigator.pushReplacementNamed(context, '/home');
                           }
                           else {
-                            await _showWrongDialog();
+                            await _showWrongDialog(response.attempts);
+                            if (!context.mounted) return;
+                            if (response.attempts == 0) {
+                              Navigator.pushReplacementNamed(context, '/home');
+                            }
                           }
                         }
                       } catch (e) {
