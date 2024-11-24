@@ -7,6 +7,7 @@ class SigmaModel {
     var myStorage = SigmaStorage();
     var sigmaAPI = SigmaAPI();
     String? questionContent;
+    int? score;
 
     Future<LoginResponse> login(String username, String password) async {
       LoginResponse data = await sigmaAPI.login(username, password);

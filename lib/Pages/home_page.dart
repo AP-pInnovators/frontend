@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
 
   void _fetchQuestion() async {
     var appState = Provider.of<MyAppState>(context, listen: false);
-    var curr = 3;
+    var curr = 2;
     setState(() {
       _questionFuture = myModel.getquestion(curr); // Call your question fetching method here
     });
