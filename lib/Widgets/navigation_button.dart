@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 class NavigationButton extends StatelessWidget {
   final IconData icon;
+  final String page;
 
   const NavigationButton({
     super.key,
     required this.icon,
+    required this.page,
   });
 
   @override
@@ -20,7 +22,9 @@ class NavigationButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushReplacementNamed(context, '/$page');
+        },
         child: Icon(icon, size: 50),
       ),
     );
