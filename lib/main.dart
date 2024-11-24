@@ -5,6 +5,7 @@ import 'Logic/app_state.dart';
 import 'Pages/login_page.dart';
 import 'Pages/home_page.dart';
 import 'Pages/problem_page.dart';
+import 'Pages/profile_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../storage.dart';
 
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginPage(),
           '/home': (context) => HomePage(),
           '/problem': (context) => ProblemPage(),
+          '/profile': (context) => ProfilePage(),
         },
       ),
     );

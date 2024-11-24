@@ -105,7 +105,7 @@ class _ProblemPageState extends State<ProblemPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  NavigationButton(icon: Icons.home),
+                  NavigationButton(icon: Icons.home, page: "home"),
                   SizedBox(width: 10),
                   Expanded(
                     child: Container(
@@ -125,9 +125,14 @@ class _ProblemPageState extends State<ProblemPage> {
                             } 
                             else if (snapshot.hasData){
                               // Display the content once loaded
+                              String displayString = snapshot.data!.content;
+                              for (final answer in snapshot.data!.answers) {
+                                String answercontent = answer["content"];
+                                displayString = "$displayString"" ""$answercontent";
+                              }
                               return TeXView(
                                 child: TeXViewDocument(
-                                  snapshot.data!.content,
+                                  displayString,
                                   style: TeXViewStyle(
                                     textAlign: TeXViewTextAlign.center,
                                   ),

@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
 
   void _fetchQuestion() async {
     var appState = Provider.of<MyAppState>(context, listen: false);
-    var curr = 2;
+    var curr = 3;
     setState(() {
       _questionFuture = myModel.getquestion(curr); // Call your question fetching method here
     });
@@ -131,11 +131,11 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                NavigationButton(icon: Icons.manage_search),
+                NavigationButton(icon: Icons.manage_search, page: "home"),
                 SizedBox(width: 10),
-                NavigationButton(icon: Icons.leaderboard),
+                NavigationButton(icon: Icons.leaderboard, page: "home"),
                 SizedBox(width: 10),
-                NavigationButton(icon: Icons.account_circle),
+                NavigationButton(icon: Icons.account_circle, page: "profile"),
               ],
             ),
           ],
