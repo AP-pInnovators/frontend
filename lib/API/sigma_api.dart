@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:namer_app/Models/answer_response.dart';
 import 'package:namer_app/Models/login_response.dart';
+import 'package:namer_app/Models/recommend_response.dart';
 import 'dart:convert';
 import 'dart:io';
 import '../Models/problem_response.dart';
@@ -115,5 +116,36 @@ class SigmaAPI {
       // Pass the error message to the UI
       throw Exception("Connection Refused");
     }
-  }  
+  }
+  Future<RecommendResponse> getrecommendation(String? sessionKey) async {
+    http.Response response;
+    var decodedRecommendation = {};
+
+    try {
+      String url = returnBaseURL();
+
+      response = await http.get(
+        Uri.parse('$url''recommendation'),
+        headers: {'Content-Type': 'application/json',
+                  'Authorization':'Bearer $sessionKey'},
+      );
+
+      
+      if (response.statusCode == 200) {
+        decodedRecommendation = jsonDecode(response.body);
+        if (decodedRecommendation['success']) {
+          print(decodedRecommendation);
+          return RecommendResponse.fromJson(decodedRecommendation as Map<String, dynamic>);
+        } else {
+          // Extract and throw the error message from the response
+          throw decodedRecommendation['error_message'];
+        }
+      } else {
+        throw 'Failed to get recommendation';
+      }
+    } catch (e) {
+      // Pass the error message to the UI
+      throw Exception("Connection Refused");
+    }
+  }
 }

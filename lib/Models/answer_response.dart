@@ -26,7 +26,7 @@ class AnswerResponse extends APIResponse {
           attempts: attempts,
           score: score,
         ),
-      _ => throw const FormatException('Failed to login'),
+      _ => throw const FormatException('Failed to answer'),
     };
   }
 }

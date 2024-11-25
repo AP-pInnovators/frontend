@@ -22,7 +22,7 @@ class ProblemResponse extends APIResponse {
           content: content,
           answers: answers,
         ),
-      _ => throw const FormatException('Failed to load problem.'),
+      _ => throw const FormatException('Failed to load problem'),
     };
   }
 }

@@ -26,11 +26,12 @@ class _HomePageState extends State<HomePage> {
 
   void _fetchQuestion() async {
     var appState = Provider.of<MyAppState>(context, listen: false);
-    var curr = 2;
+    var curr = await myModel.getrecommendation();
+    print(curr.id);
     setState(() {
-      _questionFuture = myModel.getquestion(curr); // Call your question fetching method here
+      _questionFuture = myModel.getquestion(curr.id); // Call your question fetching method here
     });
-    await appState.updateCurrentProblem(curr);
+    await appState.updateCurrentProblem(curr.id);
   }
 
 
