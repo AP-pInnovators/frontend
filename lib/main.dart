@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Color.fromARGB(255, 200, 165, 223),
           fontFamily: GoogleFonts.titilliumWeb().fontFamily,
         ),
-        initialRoute: '/profile',
+        initialRoute: '/login',
         routes: {
           '/login': (context) => LoginPage(),
           '/home': (context) => HomePage(),
