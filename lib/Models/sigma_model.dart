@@ -1,3 +1,5 @@
+import 'package:namer_app/Models/recommend_response.dart';
+
 import '../API/sigma_API.dart';
 import '../storage.dart';
 import 'login_response.dart';
@@ -8,6 +10,7 @@ class SigmaModel {
     var sigmaAPI = SigmaAPI();
     String? questionContent;
     int? score;
+    int? currentQuestion;
 
     Future<LoginResponse> login(String username, String password) async {
       LoginResponse data = await sigmaAPI.login(username, password);
@@ -28,6 +31,10 @@ class SigmaModel {
       return data;
     }
 
-
+    Future<RecommendResponse> getrecommendation() async {
+      String? sessionKey = await myStorage.getSessionKey();
+      RecommendResponse data = await sigmaAPI.getrecommendation(sessionKey);
+      return data;
+    }
     
 }

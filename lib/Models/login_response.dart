@@ -23,7 +23,7 @@ class LoginResponse extends APIResponse {
           sessionToken: sessionToken,
           tokenType: tokenType,
         ),
-      _ => throw const FormatException('Failed to login'),
+      _ => throw const FormatException('Failed to format login'),
     };
   }
 }
