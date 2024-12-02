@@ -131,14 +131,9 @@ class _ProblemPageState extends State<ProblemPage> {
                             } 
                             else if (snapshot.hasData){
                               // Display the content once loaded
-                              String displayString = snapshot.data!.content;
-                              for (final answer in snapshot.data!.answers) {
-                                String answercontent = answer["content"];
-                                displayString = "$displayString"" ""$answercontent";
-                              }
                               return TeXView(
                                 child: TeXViewDocument(
-                                  displayString,
+                                  snapshot.data!.content,
                                   style: TeXViewStyle(
                                     textAlign: TeXViewTextAlign.center,
                                   ),
