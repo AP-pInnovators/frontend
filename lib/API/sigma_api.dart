@@ -5,6 +5,7 @@ import 'package:namer_app/Models/recommend_response.dart';
 import 'dart:convert';
 import 'dart:io';
 import '../Models/problem_response.dart';
+import '../Models/stats_response.dart';
 import '../Logic/app_state.dart';
 
 class SigmaAPI {
@@ -139,6 +140,38 @@ class SigmaAPI {
         } else {
           // Extract and throw the error message from the response
           throw decodedRecommendation['error_message'];
+        }
+      } else {
+        throw 'Failed to get recommendation';
+      }
+    } catch (e) {
+      // Pass the error message to the UI
+      throw Exception("Connection Refused");
+    }
+  }
+
+  Future<StatsResponse> getstats(String? sessionKey) async {
+    http.Response response;
+    var decodedStats = {};
+
+    try {
+      String url = returnBaseURL();
+
+      response = await http.get(
+        Uri.parse('$url''stats'),
+        headers: {'Content-Type': 'application/json',
+                  'Authorization':'Bearer $sessionKey'},
+      );
+
+      
+      if (response.statusCode == 200) {
+        decodedStats = jsonDecode(response.body);
+        if (decodedStats['success']) {
+          print(decodedStats);
+          return StatsResponse.fromJson(decodedStats as Map<String, dynamic>);
+        } else {
+          // Extract and throw the error message from the response
+          throw decodedStats['error_message'];
         }
       } else {
         throw 'Failed to get recommendation';

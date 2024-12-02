@@ -5,6 +5,8 @@ import '../storage.dart';
 import 'login_response.dart';
 import 'answer_response.dart';
 import 'problem_response.dart';
+import 'stats_response.dart';
+
 class SigmaModel {
     var myStorage = SigmaStorage();
     var sigmaAPI = SigmaAPI();
@@ -37,4 +39,9 @@ class SigmaModel {
       return data;
     }
     
+    Future<StatsResponse> getstats() async {
+      String? sessionKey = await myStorage.getSessionKey();
+      StatsResponse data = await sigmaAPI.getstats(sessionKey);
+      return data;
+    }
 }

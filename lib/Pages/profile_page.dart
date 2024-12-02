@@ -1,14 +1,44 @@
 // lib/Pages/profile_page.dart
 import 'package:flutter/material.dart';
+import '../Models/sigma_model.dart';
+import '../Models/stats_response.dart';
+import '../API/sigma_API.dart';
+import '../Widgets/navigation_button.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   final String username = "placeholder"; 
+
   final String aboutMe = "placeholder"; 
+
   final int streak = 0; 
+
   final int leaderboardRank = 0; 
+
   final double accuracy = 0; 
+
   final int problemsSolved = 0; 
+
   final String timeSpent = "placeholder"; 
+
+  var myModel = SigmaModel();
+  Future<StatsResponse>? _statsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => _fetchQuestion()); // Fetch the question when the page is initialized
+  }
+
+  void _fetchQuestion() async {
+    setState(() {
+      _statsFuture = myModel.getstats(); // Call your question fetching method here
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,10 +137,24 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      "Leaderboard Ranking - #$leaderboardRank",
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
+                    FutureBuilder(
+                      future: _statsFuture, 
+                      builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              // Handle any errors that occurred during the fetch
+                              return Center(
+                                child: Text('Error: ${snapshot.error}'),
+                              );
+                            } 
+                            else if (snapshot.hasData){
+                              // Display the content once loaded
+                              return Text(snapshot.data!.score.toString());
+                            }
+                            return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                          },
+                        ),
                     Text(
                       "Accuracy - ${accuracy.toStringAsFixed(1)}%",
                       style: TextStyle(fontSize: 16, color: Colors.black),
@@ -169,12 +213,7 @@ class ProfilePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      // Navigate to Home
-                    },
-                    icon: Icon(Icons.home, color: Colors.black54, size: 32),
-                  ),
+                  NavigationButton(icon: Icons.home, page: "home"),
                   IconButton(
                     onPressed: () {
                       // Navigate to Search
