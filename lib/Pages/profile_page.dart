@@ -1,5 +1,6 @@
 // lib/Pages/profile_page.dart
 import 'package:flutter/material.dart';
+import 'package:namer_app/Pages/home_page.dart';
 import '../Models/sigma_model.dart';
 import '../Models/stats_response.dart';
 import '../API/sigma_API.dart';
@@ -214,7 +215,38 @@ class _ProfilePageState extends State<ProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  NavigationButton(icon: Icons.home, page: "home"),
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(-1.0, 0.0); // Start off-screen to the left
+                              const end = Offset.zero;        // Slide to the center
+                              const curve = Curves.ease;
+
+                              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                              var offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.home, size: 50),
+                    ),
+                  ),
                   IconButton(
                     onPressed: () {
                       // Navigate to Search

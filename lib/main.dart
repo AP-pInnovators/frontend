@@ -35,6 +35,28 @@ class MyApp extends StatelessWidget {
           '/problem': (context) => ProblemPage(),
           '/profile': (context) => ProfilePage(),
         },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/home') {
+            return PageRouteBuilder(
+              settings: settings, // Pass settings for named routes
+              pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                const begin = Offset(-1.0, 0.0); // Start off-screen to the left
+                const end = Offset.zero;        // Slide to the center
+                const curve = Curves.ease;
+
+                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
+            );
+          }
+          return null;
+        }
       ),
     );
   }
