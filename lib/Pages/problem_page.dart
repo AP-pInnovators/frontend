@@ -17,6 +17,8 @@ class _ProblemPageState extends State<ProblemPage> {
   Future<ProblemResponse>? _questionFuture;
   int? questionid;
   var myModel = SigmaModel();
+  String? selectedChoice;
+  List? choicesRemaining;
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _ProblemPageState extends State<ProblemPage> {
 
     setState(() {
       _questionFuture = myModel.getquestion(appState.dailyProblem); // Call your question fetching method here
+      choicesRemaining = ["A", "B", "C", "D", "E"];
     });
   }
 
@@ -170,25 +173,34 @@ class _ProblemPageState extends State<ProblemPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 500,
-                    child: TextFormField(
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.all(20.0),
-                      filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-                      hintText: 'Enter Answer',
+                  for (var choice in choicesRemaining!)
+                    SizedBox(
+                    width: 90,
+                    height: 50,
+                    child: ListTileTheme(
+                      horizontalTitleGap: 2,
+                      child: ListTile(
+                        title: Text(choice),
+                          leading: Radio<String>(
+                            value: choice,
+                            groupValue: selectedChoice,
+                            onChanged: (value) {
+                            setState(() {
+                              selectedChoice = value;
+                              print("Button value: $value");
+                              }
+                            );
+                          },
+                        ),
+                      ),
                     ),
-                    controller: answerController,
-                  ),
                   ),
                   SizedBox(width: 20),
                   ElevatedButton(
                     onPressed: () async {
                       try {
                         var response = await myModel.answer(
-                          answerController.text,
+                          selectedChoice,
                           appState.dailyProblem,
                         );
                         if (!context.mounted) return;
@@ -200,6 +212,11 @@ class _ProblemPageState extends State<ProblemPage> {
                             Navigator.pushReplacementNamed(context, '/home');
                           }
                           else {
+                            setState(() {
+                              choicesRemaining = choicesRemaining!.where(
+                                (choice) => choice != selectedChoice,
+                              ).toList();
+                            });
                             await _showWrongDialog(response.attempts);
                             if (!context.mounted) return;
                             if (response.attempts == 0) {
