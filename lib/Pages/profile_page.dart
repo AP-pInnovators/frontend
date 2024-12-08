@@ -47,6 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
         title: Text("Profile Screen"),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
+        automaticallyImplyLeading: false
       ),
       body: Container(
         color: Colors.purple.shade100,

@@ -84,7 +84,7 @@ class SigmaAPI {
     }
   }
 
-  Future<AnswerResponse> answer(String content, int id, String? sessionKey) async {
+  Future<AnswerResponse> answer(String? content, int id, String? sessionKey) async {
     var initdata = {'content': content};
     var jsondata = jsonEncode(initdata);
     var decodedAnswer = {};

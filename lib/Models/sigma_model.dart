@@ -8,40 +8,52 @@ import 'problem_response.dart';
 import 'stats_response.dart';
 
 class SigmaModel {
-    var myStorage = SigmaStorage();
-    var sigmaAPI = SigmaAPI();
-    String? questionContent;
-    int? score;
-    int? currentQuestion;
+  // Private static instance of SigmaModel
+  static final SigmaModel _instance = SigmaModel._internal();
 
-    Future<LoginResponse> login(String username, String password) async {
-      LoginResponse data = await sigmaAPI.login(username, password);
-      myStorage.writeSessionKey(data.sessionToken);
-      return data;
-    }
+  // Public factory constructor
+  factory SigmaModel() {
+    return _instance;
+  }
 
-    Future<ProblemResponse> getquestion(int questionid) async {
-      String? sessionKey = await myStorage.getSessionKey();
-      ProblemResponse data = await sigmaAPI.getquestion(questionid, sessionKey);
-      questionContent = data.content;
-      return data;
-    }
+  // Private constructor
+  SigmaModel._internal();
 
-    Future<AnswerResponse> answer(String content, int id) async {
-      String? sessionKey = await myStorage.getSessionKey();
-      AnswerResponse data = await sigmaAPI.answer(content, id, sessionKey);
-      return data;
-    }
+  var myStorage = SigmaStorage();
+  var sigmaAPI = SigmaAPI();
+  String? questionContent;
+  int? score;
+  int? currentQuestion;
+  List? choicesRemaining;
 
-    Future<RecommendResponse> getrecommendation() async {
-      String? sessionKey = await myStorage.getSessionKey();
-      RecommendResponse data = await sigmaAPI.getrecommendation(sessionKey);
-      return data;
-    }
-    
-    Future<StatsResponse> getstats() async {
-      String? sessionKey = await myStorage.getSessionKey();
-      StatsResponse data = await sigmaAPI.getstats(sessionKey);
-      return data;
-    }
+  Future<LoginResponse> login(String username, String password) async {
+    LoginResponse data = await sigmaAPI.login(username, password);
+    myStorage.writeSessionKey(data.sessionToken);
+    return data;
+  }
+
+  Future<ProblemResponse> getquestion(int questionid) async {
+    String? sessionKey = await myStorage.getSessionKey();
+    ProblemResponse data = await sigmaAPI.getquestion(questionid, sessionKey);
+    questionContent = data.content;
+    return data;
+  }
+
+  Future<AnswerResponse> answer(String? content, int id) async {
+    String? sessionKey = await myStorage.getSessionKey();
+    AnswerResponse data = await sigmaAPI.answer(content, id, sessionKey);
+    return data;
+  }
+
+  Future<RecommendResponse> getrecommendation() async {
+    String? sessionKey = await myStorage.getSessionKey();
+    RecommendResponse data = await sigmaAPI.getrecommendation(sessionKey);
+    return data;
+  }
+  
+  Future<StatsResponse> getstats() async {
+    String? sessionKey = await myStorage.getSessionKey();
+    StatsResponse data = await sigmaAPI.getstats(sessionKey);
+    return data;
+  }
 }
