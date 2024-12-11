@@ -78,26 +78,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: Colors.black,
                         ),
                       ),
-                      Spacer(),
-                      // Streak Section
-                      Column(
-                        children: [
-                          Icon(Icons.local_fire_department,
-                              color: Colors.orange, size: 30),
-                          Text(
-                            'Streak',
-                            style: TextStyle(color: Colors.black54, fontSize: 14),
-                          ),
-                          Text(
-                            'Streak features coming soon!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                   SizedBox(height: 16),

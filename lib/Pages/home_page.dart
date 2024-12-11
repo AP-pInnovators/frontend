@@ -130,9 +130,9 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                NavigationButton(icon: Icons.manage_search, page: "none"),
+                NavigationButton(icon: Icons.manage_search, page: "The question database search feature is on its way! Try the recommended problem for now..."),
                 SizedBox(width: 10),
-                NavigationButton(icon: Icons.leaderboard, page: "none"),
+                NavigationButton(icon: Icons.leaderboard, page: "The global leaderboard feature is on its way! Try checking your profile statistics for now..."),
                 SizedBox(width: 10),
                 NavigationButton(icon: Icons.account_circle, page: "profile"),
               ],
