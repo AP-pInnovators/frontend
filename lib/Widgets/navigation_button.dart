@@ -26,7 +26,7 @@ class NavigationButton extends StatelessWidget {
           if (page == "home") {
             Navigator.pushNamed(context, '/$page');
           }
-          if (page == "profile") {
+          else if (page == "profile") {
             Navigator.pushNamed(context, '/$page');
           }
           else {
