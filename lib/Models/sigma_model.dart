@@ -24,11 +24,12 @@ class SigmaModel {
   String? questionContent;
   int? score;
   int? currentQuestion;
-  List? choicesRemaining;
+  String user = "";
 
   Future<LoginResponse> login(String username, String password) async {
     LoginResponse data = await sigmaAPI.login(username, password);
-    myStorage.writeSessionKey(data.sessionToken);
+    await myStorage.writeSessionKey(data.sessionToken);
+    user = username;
     return data;
   }
 
@@ -54,6 +55,16 @@ class SigmaModel {
   Future<StatsResponse> getstats() async {
     String? sessionKey = await myStorage.getSessionKey();
     StatsResponse data = await sigmaAPI.getstats(sessionKey);
+    score = data.score;
     return data;
+  }
+
+  Future<void> logout() async {
+    questionContent = "";
+    score = 0;
+    currentQuestion = 1;
+    user = "";
+    await myStorage.deleteSessionKey();
+    return;
   }
 }

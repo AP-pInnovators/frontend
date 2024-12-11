@@ -9,9 +9,13 @@ import '../Models/stats_response.dart';
 import '../Logic/app_state.dart';
 
 class SigmaAPI {
-  
+  bool demo = false;
+
   String returnBaseURL() {
-    if (Platform.isAndroid) {
+    if (demo) {
+      return 'http://192.168.1.17:8000/api/';
+    }
+    else if (Platform.isAndroid) {
       return 'http://10.0.2.2:8000/api/';
     }
     else {

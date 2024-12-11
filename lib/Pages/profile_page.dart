@@ -12,7 +12,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final String username = "placeholder"; 
+  var myModel = SigmaModel();
+  Future<StatsResponse>? _statsFuture;
 
   final String aboutMe = "placeholder"; 
 
@@ -25,9 +26,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final int problemsSolved = 0; 
 
   final String timeSpent = "placeholder"; 
-
-  var myModel = SigmaModel();
-  Future<StatsResponse>? _statsFuture;
 
   @override
   void initState() {
@@ -55,93 +53,76 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.purple.shade300,
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Text(
-                    username,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Spacer(),
-                  // Streak Section
-                  Column(
+                  Row(
                     children: [
-                      Icon(Icons.local_fire_department,
-                          color: Colors.orange, size: 30),
-                      Text(
-                        'Streak',
-                        style: TextStyle(color: Colors.black54, fontSize: 14),
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.purple.shade300,
+                        child: Icon(
+                          Icons.person,
+                          size: 40,
+                          color: Colors.white,
+                        ),
                       ),
+                      SizedBox(width: 16),
                       Text(
-                        '$streak days',
+                        myModel.user,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
+                      Spacer(),
+                      // Streak Section
+                      Column(
+                        children: [
+                          Icon(Icons.local_fire_department,
+                              color: Colors.orange, size: 30),
+                          Text(
+                            'Streak',
+                            style: TextStyle(color: Colors.black54, fontSize: 14),
+                          ),
+                          Text(
+                            'Streak features coming soon!',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
-              SizedBox(height: 16),
-              // About Me Section
-              Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 4,
-                      offset: Offset(2, 2),
+                  SizedBox(height: 16),
+                  // Statistics Section
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.purple.shade200,
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ],
-                ),
-                child: Text(
-                  aboutMe,
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                ),
-              ),
-              SizedBox(height: 16),
-              // Statistics Section
-              Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.purple.shade200,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Statistics",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    FutureBuilder(
-                      future: _statsFuture, 
-                      builder: (context, snapshot) {
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Statistics",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        FutureBuilder(
+                          future: _statsFuture, 
+                          builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               // Handle any errors that occurred during the fetch
                               return Center(
@@ -150,117 +131,81 @@ class _ProfilePageState extends State<ProfilePage> {
                             } 
                             else if (snapshot.hasData){
                               // Display the content once loaded
-                              return Text(snapshot.data!.score.toString());
+                              return Text('Score: ' + snapshot.data!.score.toString());
                             }
                             return Center(
                                 child: CircularProgressIndicator(),
                               );
                           },
                         ),
-                    Text(
-                      "Accuracy - ${accuracy.toStringAsFixed(1)}%",
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      ],
                     ),
-                    Text(
-                      "Problems Solved - $problemsSolved",
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                  SizedBox(height: 16),
+                  // Logout Button
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Add logout functionality here
+                      await myModel.logout();
+                      Navigator.pushReplacementNamed(context, '/login');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 35),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    Text(
-                      "Time Spent - $timeSpent",
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    child: Text(
+                      "Log Out",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  // Navigation Icons
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                const begin = Offset(-1.0, 0.0); // Start off-screen to the left
+                                const end = Offset.zero;        // Slide to the center
+                                const curve = Curves.ease;
+            
+                                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                var offsetAnimation = animation.drive(tween);
+            
+                                return SlideTransition(
+                                  position: offsetAnimation,
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        child: Icon(Icons.home, size: 50),
+                      ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: 16),
-              // Placeholder for account settings
-              Container(
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(
-                    "Base Account Settings (make separate screen later)",
-                    style: TextStyle(fontSize: 14, color: Colors.black54),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-              // Logout Button
-              ElevatedButton(
-                onPressed: () {
-                  // Add logout functionality here
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Log Out functionality coming soon!")),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: Text(
-                  "Log Out",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-              // Navigation Icons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              const begin = Offset(-1.0, 0.0); // Start off-screen to the left
-                              const end = Offset.zero;        // Slide to the center
-                              const curve = Curves.ease;
-
-                              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                              var offsetAnimation = animation.drive(tween);
-
-                              return SlideTransition(
-                                position: offsetAnimation,
-                                child: child,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      child: Icon(Icons.home, size: 50),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      // Navigate to Search
-                    },
-                    icon: Icon(Icons.search, color: Colors.black54, size: 32),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      // Navigate to Analytics
-                    },
-                    icon: Icon(Icons.bar_chart, color: Colors.black54, size: 32),
-                  ),
-                ],
-              ),
+              )
             ],
           ),
         ),

@@ -71,6 +71,7 @@ class LoginPage extends StatelessWidget {
 
                   // If login is successful
                   if (response.success) {
+                    myModel.getstats();
                     Navigator.pushReplacementNamed(context, '/home');
                   }
                 } catch (e) {

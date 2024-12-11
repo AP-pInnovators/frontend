@@ -55,29 +55,27 @@ class _HomePageState extends State<HomePage> {
               width: 200, // Set width
               height: 200, // Set height
             ),
-            SizedBox(
-              height: 20
-            ),
-            // Recommended Problem Button
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/login');
-              },
-
-              child: Column(
-                children: [
-                  Text("Recommended Problem"),
-                  Container(width: 300, height: 140, alignment: Alignment.center, child: Text("Preview")),
-                ],
-              ),
-            ),
             SizedBox(height: 20),
-            // Daily Problem Button
+            // Score display
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.purple.shade200,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                myModel.score != null
+                  ? 'Score: ' + myModel.score.toString() // Display the score if not null
+                  : (() {
+                      myModel.getstats(); // Call fallback function
+                      return "Loading..."; // Display placeholder text
+                    })(),
+              )
+            ),
+
+            SizedBox(height: 40),
+
+            // Recommended Problem Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -89,11 +87,11 @@ class _HomePageState extends State<HomePage> {
               },
               child: Column(
                   children: [
-                    Text("Daily Problem"),
+                    Text("Recommended Problem"),
                     Container(
                       alignment: Alignment.center,
-                      width: 300,
-                      height: 140,  // Set fixed width to prevent overflow
+                      width: 500,
+                      height: 300,  // Set fixed width to prevent overflow
                       padding: EdgeInsets.all(8), // Add padding for better spacing
                         child: FutureBuilder(
                           future: _questionFuture,  // Fetch the question
@@ -132,9 +130,9 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                NavigationButton(icon: Icons.manage_search, page: "home"),
+                NavigationButton(icon: Icons.manage_search, page: "none"),
                 SizedBox(width: 10),
-                NavigationButton(icon: Icons.leaderboard, page: "home"),
+                NavigationButton(icon: Icons.leaderboard, page: "none"),
                 SizedBox(width: 10),
                 NavigationButton(icon: Icons.account_circle, page: "profile"),
               ],
