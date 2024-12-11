@@ -1,17 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SigmaStorage {
-  // final String sessionKeyKey = 'session-key';
-  // final storage = FlutterSecureStorage();
-
-  // Future<void>? writeSessionKey(String sessionKey) async {
-  //   storage.write(key:sessionKeyKey, value:sessionKey);
-  // }
-
-  // Future<String?> getSessionKey() async {
-  //   return storage.read(key:sessionKeyKey);
-  // }
-  
   // Private constructor
   SigmaStorage._privateConstructor();
 
@@ -37,5 +26,9 @@ class SigmaStorage {
   // Method to read the session key
   Future<String?> getSessionKey() async {
     return _storage.read(key: sessionKeyKey);
+  }
+
+  Future<void> deleteSessionKey() async {
+    await _storage.delete(key:sessionKeyKey);
   }
 }

@@ -23,7 +23,38 @@ class NavigationButton extends StatelessWidget {
                 ),
               ),
         onPressed: () {
-          Navigator.pushReplacementNamed(context, '/$page');
+          if (page == "home") {
+            Navigator.pushNamed(context, '/$page');
+          }
+          if (page == "profile") {
+            Navigator.pushNamed(context, '/$page');
+          }
+          else {
+            showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("Upcoming Feature!"),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text(page),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text("OK"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
         },
         child: Icon(icon, size: 50),
       ),

@@ -207,6 +207,7 @@ class _ProblemPageState extends State<ProblemPage> {
                         // If login is successful
                         if (response.success) {
                           if (response.correct) {
+                            myModel.getstats();
                             await _showCorrectDialog(response.score);
                             if (!context.mounted) return;
                             Navigator.pushReplacementNamed(context, '/home');
